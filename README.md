@@ -24,15 +24,23 @@ A Bloomberg terminal-inspired stock investment return calculator with PDF report
 
 ## ✨ Features
 
+- 🗂️ **Bloomberg-Style Navigation** — Instantly switch between Main Calculator, DRIP Simulator, Portfolio Builder, and Future Forecast.
+- 🔮 **Monte Carlo Future Forecast** — Projections of future portfolio values based on historical volatility and drift using Monte Carlo simulations.
+- 🧺 **Multi-Asset Portfolio Builder** — Backtest a custom basket of up to 5 assets with specified weights (Buy & Hold) tracking actual asset drift over time.
+- 💸 **DRIP Simulator** — Visualize dividend compounding by automatically reinvesting custom dividend yields.
 - 🔍 **Stock Ticker Search** — Supports global tickers (e.g. `AAPL`, `TSLA`, `005930.KS`)
-- 📅 **Date Range Selection** — Pick custom start and end dates
-- 💰 **Currency Toggle** — Switch between `USD` and `KRW`
-- 📊 **Interactive Chart** — Recharts-powered area chart with hover tooltips
-- 📋 **Summary Cards** — Final value, Total P&L, Return rate, Best/Worst day, Trading days
-- 🟢🔴 **Color Coded** — Green for gains, Red for losses
+- 📅 **Date Range & Presets** — Pick custom start/end dates or use quick presets (1M, YTD, 1Y, MAX, etc.)
+- 🔄 **Investment Mode Toggle** — Switch between **Lump Sum** and **DCA** (Dollar Cost Averaging) strategies
+- 📈 **Benchmark Comparison** — Compare stock performance against major indices (S&P 500, NASDAQ, Dow Jones, KOSPI) or custom tickers
+- 🗓️ **Monthly Returns Heatmap** — Professional Bloomberg-style monthly/yearly returns heatmap matrix
+- 🗄️ **Historical Data Table** — Detailed daily data table with **CSV Export** functionality
+- 🪙 **Currency Toggle & Crypto** — Switch between `USD` and `KRW`, with full support for cryptocurrency decimals
+- 📊 **Interactive Chart** — Recharts-powered area and line chart with merged DCA lines and hover tooltips
+- 📋 **Advanced Summary Cards** — Final value, Total P&L, Best/Worst day, Max Drawdown, and Sharpe Ratio
+- 🔗 **Shareable Links** — Easily share your portfolio configuration via custom URL parameters
 - 📄 **PDF Report Export** — Generates bilingual PDF (Korean 🇰🇷 + English 🇺🇸) with chart & analysis
 - 🖥️ **Bloomberg Terminal Theme** — Dark mode, monospace fonts, terminal aesthetics
-- 📱 **Responsive Layout** — Works on desktop and mobile
+- 📱 **Responsive Layout** — Works seamlessly across desktop and mobile devices
 
 ## 🛠️ Tech Stack
 

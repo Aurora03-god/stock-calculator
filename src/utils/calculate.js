@@ -5,11 +5,8 @@ export async function fetchStockData(ticker, startDate, endDate) {
   const p2 = toUnix(endDate);
   if (p2 <= p1) throw new Error('종료일이 시작일보다 나중이어야 합니다.');
 
-  // Auto-select interval based on date range to avoid Yahoo Finance truncation
-  const daysDiff = (p2 - p1) / 86400;
-  let interval = '1d';
-  if (daysDiff > 365 * 10) interval = '1mo';
-  else if (daysDiff > 365 * 2) interval = '1wk';
+  // Always use 1d interval to show daily data as requested
+  const interval = '1d';
 
   const url = `https://corsproxy.io/?${encodeURIComponent(
     `https://query1.finance.yahoo.com/v8/finance/chart/${ticker.trim().toUpperCase()}?period1=${p1}&period2=${p2}&interval=${interval}`
