@@ -24,7 +24,7 @@ A Bloomberg terminal-inspired stock investment return calculator with PDF report
 
 ## ✨ Features
 
-- 🗂️ **Bloomberg-Style Navigation** — Instantly switch between Main Calculator, DRIP Simulator, Portfolio Builder, and Future Forecast.
+- 🗂️ **CSS Grid Widget Dashboard** — A stable, hardware-accelerated dashboard layout displaying the Main Calculator, DRIP Simulator, Portfolio Builder, and Future Forecast seamlessly on one screen.
 - 🔮 **Monte Carlo Future Forecast** — Projections of future portfolio values based on historical volatility and drift using Monte Carlo simulations.
 - 🧺 **Multi-Asset Portfolio Builder** — Backtest a custom basket of up to 5 assets with specified weights (Buy & Hold) tracking actual asset drift over time.
 - 💸 **DRIP Simulator** — Visualize dividend compounding by automatically reinvesting custom dividend yields.
@@ -35,7 +35,8 @@ A Bloomberg terminal-inspired stock investment return calculator with PDF report
 - 🗓️ **Monthly Returns Heatmap** — Professional Bloomberg-style monthly/yearly returns heatmap matrix
 - 🗄️ **Historical Data Table** — Detailed daily data table with **CSV Export** functionality
 - 🪙 **Currency Toggle & Crypto** — Switch between `USD` and `KRW`, with full support for cryptocurrency decimals
-- 📊 **Interactive Chart** — Recharts-powered area and line chart with merged DCA lines and hover tooltips
+- 📊 **Interactive Dual-Axis Chart** — Recharts-powered area and line charts featuring merged DCA lines, hover tooltips, and secondary Y-axis.
+- 🌍 **Macro-Economic Overlays** — Compare stock performance directly against key macro indicators (e.g., 10-Yr Treasury Yield `^TNX`, VIX `^VIX`, US Dollar Index `DX-Y.NYB`).
 - 📋 **Advanced Summary Cards** — Final value, Total P&L, Best/Worst day, Max Drawdown, and Sharpe Ratio
 - 🔗 **Shareable Links** — Easily share your portfolio configuration via custom URL parameters
 - 📄 **PDF Report Export** — Generates bilingual PDF (Korean 🇰🇷 + English 🇺🇸) with chart & analysis

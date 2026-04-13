@@ -1,83 +1,65 @@
 import React, { useState } from 'react';
-import { LineChart, Combine, BarChart3 } from 'lucide-react';
+import { LayoutDashboard } from 'lucide-react';
+
 import MainCalculator from './components/MainCalculator';
 import DripCalculator from './components/DripCalculator';
 import PortfolioSimulator from './components/PortfolioSimulator';
 import MonteCarloSimulator from './components/MonteCarloSimulator';
 
-export default function App() {
-  const [activeView, setActiveView] = useState('main');
-
+const Widget = ({ title, children, className = '' }) => {
   return (
-    <div className="min-h-screen p-4 md:p-8 max-w-7xl mx-auto flex flex-col">
+    <div className={`bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl flex flex-col overflow-hidden shadow-2xl h-full ${className}`}>
+      <div className="bg-[#111] border-b border-[#2a2a2a] py-3 px-5 flex items-center justify-between">
+        <h2 className="text-[#aaa] text-xs font-mono font-semibold uppercase tracking-widest">{title}</h2>
+      </div>
+      <div className="flex-1 p-4 md:p-6 overflow-hidden">
+         {children}
+      </div>
+    </div>
+  );
+};
+
+export default function App() {
+  return (
+    <div className="min-h-screen p-4 md:p-6 max-w-[1600px] mx-auto flex flex-col">
       {/* ── HEADER ── */}
-      <header className="mb-6">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-2 h-2 rounded-full bg-terminal-green animate-pulse" />
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            Stock Return <span className="text-terminal-green">Calculator</span>
-          </h1>
+      <header className="mb-6 flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-2 h-2 rounded-full bg-terminal-green animate-pulse" />
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+              Stock <span className="text-terminal-green">Terminal</span> Pro
+            </h1>
+          </div>
+          <p className="text-sm text-[#555] ml-5">전문가용 투자 분석 및 백테스트 대시보드</p>
         </div>
-        <p className="text-sm text-[#555] ml-5">주식 투자 수익률 계산기 · Bloomberg-style Terminal</p>
+        <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono font-semibold text-terminal-green bg-terminal-green/10 border border-terminal-green/30">
+          <LayoutDashboard size={14} /> Widget Dashboard Active
+        </div>
       </header>
 
-      {/* ── NAVIGATION TABS ── */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-none">
-        <button
-          onClick={() => setActiveView('main')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap cursor-pointer ${
-            activeView === 'main'
-              ? 'bg-terminal-green/20 text-terminal-green border border-terminal-green/50'
-              : 'bg-[#111] text-[#888] border border-[#222] hover:bg-[#1a1a1a] hover:text-[#bbb]'
-          }`}
-        >
-          <BarChart3 size={16} />
-          Main Calculator
-        </button>
-
-        <button
-          onClick={() => setActiveView('drip')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap cursor-pointer ${
-            activeView === 'drip'
-              ? 'bg-terminal-blue/20 text-terminal-blue border border-terminal-blue/50'
-              : 'bg-[#111] text-[#888] border border-[#222] hover:bg-[#1a1a1a] hover:text-[#bbb]'
-          }`}
-        >
-          <LineChart size={16} />
-          DRIP Simulator
-        </button>
-
-        <button
-          onClick={() => setActiveView('portfolio')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap cursor-pointer ${
-            activeView === 'portfolio'
-              ? 'bg-terminal-amber/20 text-terminal-amber border border-terminal-amber/50'
-              : 'bg-[#111] text-[#888] border border-[#222] hover:bg-[#1a1a1a] hover:text-[#bbb]'
-          }`}
-        >
-          <Combine size={16} />
-          Portfolio Builder
-        </button>
-
-        <button
-          onClick={() => setActiveView('montecarlo')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap cursor-pointer ${
-            activeView === 'montecarlo'
-              ? 'bg-terminal-red/20 text-terminal-red border border-terminal-red/50'
-              : 'bg-[#111] text-[#888] border border-[#222] hover:bg-[#1a1a1a] hover:text-[#bbb]'
-          }`}
-        >
-          <LineChart size={16} />
-          Future Forecast
-        </button>
-      </div>
-
-      {/* ── MAIN CONTENT ── */}
-      <main className="flex-1">
-        {activeView === 'main' && <MainCalculator />}
-        {activeView === 'drip' && <DripCalculator />}
-        {activeView === 'portfolio' && <PortfolioSimulator />}
-        {activeView === 'montecarlo' && <MonteCarloSimulator />}
+      {/* ── MAIN CONTENT (CSS GRID WIDGET BOARD) ── */}
+      <main className="flex-1 animate-fade-in relative grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <div className="xl:col-span-12">
+          <Widget title="Main Calculator & Macro Overlays">
+            <MainCalculator />
+          </Widget>
+        </div>
+        <div className="xl:col-span-6">
+          <Widget title="DRIP Simulator">
+            <DripCalculator />
+          </Widget>
+        </div>
+        <div className="xl:col-span-6">
+          <Widget title="Portfolio Builder">
+            <PortfolioSimulator />
+          </Widget>
+        </div>
+        <div className="xl:col-span-12">
+          <Widget title="Future Forecast (Monte Carlo)">
+            <MonteCarloSimulator />
+          </Widget>
+        </div>
       </main>
 
       {/* ── FOOTER ── */}

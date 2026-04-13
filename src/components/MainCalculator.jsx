@@ -9,7 +9,7 @@ import {
   Link2, Check, Repeat
 } from 'lucide-react';
 
-import { fmt, fmtPct, defaultStart, defaultEnd } from '../utils/format';
+import { fmt, fmtPct, defaultStart, defaultEnd, fmtDate } from '../utils/format';
 import {
   fetchStockData, calculateReturns, calculateDCA,
   getBenchmarkTicker, calculateNormalizedReturns
@@ -44,6 +44,11 @@ const CustomTooltip = ({ active, payload, currency, investMode }) => {
       {investMode === 'dca' && d.dcaValue != null && (
         <p className="text-xs text-[#888] mt-1 border-t border-[#2a2a2a] pt-1">
           DCA: <span className={`font-mono font-semibold ${d.dcaValue >= d.dcaInvested ? 'text-terminal-green' : 'text-terminal-red'}`}>{fmt(d.dcaValue, currency)}</span>
+        </p>
+      )}
+      {d.macroValue != null && (
+        <p className="text-xs text-[#888] mt-1 border-t border-[#2a2a2a] pt-1">
+          Overlay: <span className="font-mono font-semibold text-terminal-amber">{d.macroValue.toFixed(2)}</span>
         </p>
       )}
     </div>
@@ -123,6 +128,31 @@ export default function MainCalculator() {
   const [benchmarkDatasets, setBenchmarkDatasets] = useState([]);
   const [rawStockData, setRawStockData] = useState(null);
   const [activePreset, setActivePreset] = useState('1Y');
+
+  /* Macro State */
+  const [macroIndicator, setMacroIndicator] = useState('none');
+  const [macroDataMap, setMacroDataMap] = useState(new Map());
+
+  /* ─── Fetch Macro Data ─── */
+  useEffect(() => {
+    if (!rawStockData || macroIndicator === 'none') {
+      setMacroDataMap(new Map());
+      return;
+    }
+    const fetchMacro = async () => {
+      try {
+        const { timestamps, closes } = await fetchStockData(macroIndicator, startDate, endDate);
+        const map = new Map();
+        timestamps.forEach((ts, i) => {
+          if (closes[i] != null) map.set(fmtDate(ts), closes[i]);
+        });
+        setMacroDataMap(map);
+      } catch (e) {
+        console.error("Macro fetch error", e);
+      }
+    };
+    fetchMacro();
+  }, [macroIndicator, rawStockData, startDate, endDate]);
 
   /* ─── Fetch Benchmarks ─── */
   const fetchBenchmarks = useCallback(async (bmsToFetch, stockT, stockC, sDate, eDate) => {
@@ -229,17 +259,18 @@ export default function MainCalculator() {
     navigator.clipboard.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   }, [ticker, startDate, endDate, amount, currency]);
 
-  /* ─── Merge chart data with DCA ─── */
+  /* ─── Merge chart data with DCA and Macro ─── */
   const mergedChartData = React.useMemo(() => {
     if (!chartData) return null;
-    if (investMode !== 'dca' || !dcaData) return chartData;
-    const dcaMap = new Map(dcaData.map(d => [d.date, d]));
+    const isDca = investMode === 'dca' && dcaData;
+    const dcaMap = isDca ? new Map(dcaData.map(d => [d.date, d])) : null;
     return chartData.map(d => ({
       ...d,
-      dcaValue: dcaMap.get(d.date)?.value ?? null,
-      dcaInvested: dcaMap.get(d.date)?.invested ?? null,
+      dcaValue: isDca ? (dcaMap.get(d.date)?.value ?? null) : null,
+      dcaInvested: isDca ? (dcaMap.get(d.date)?.invested ?? null) : null,
+      macroValue: macroIndicator !== 'none' ? (macroDataMap.get(d.date) ?? null) : null,
     }));
-  }, [chartData, dcaData, investMode]);
+  }, [chartData, dcaData, investMode, macroIndicator, macroDataMap]);
 
   const positive = summary ? summary.returnPct >= 0 : true;
 
@@ -300,22 +331,38 @@ export default function MainCalculator() {
         {/* Period Presets */}
         <PeriodPresets setStartDate={setStartDate} setEndDate={setEndDate} activePreset={activePreset} setActivePreset={setActivePreset} />
 
-        {/* Invest Mode Toggle */}
-        <div className="flex items-center gap-3 mt-3">
-          <span className="text-xs text-[#666] uppercase tracking-wider">Mode:</span>
-          <div className="flex bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg overflow-hidden">
-            <button onClick={() => setInvestMode('lump')}
-              className={`px-4 py-1.5 text-xs font-mono font-semibold transition-all cursor-pointer ${investMode === 'lump' ? 'bg-terminal-blue/20 text-terminal-blue' : 'text-[#666] hover:text-[#aaa]'}`}>
-              Lump Sum
-            </button>
-            <button onClick={() => setInvestMode('dca')}
-              className={`px-4 py-1.5 text-xs font-mono font-semibold transition-all cursor-pointer border-l border-[#2a2a2a] ${investMode === 'dca' ? 'bg-terminal-amber/20 text-terminal-amber' : 'text-[#666] hover:text-[#aaa]'}`}>
-              <Repeat size={12} className="inline mr-1" />DCA
-            </button>
+        {/* Invest Mode & Macro Toggle */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-3">
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-[#666] uppercase tracking-wider">Mode:</span>
+            <div className="flex bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg overflow-hidden">
+              <button onClick={() => setInvestMode('lump')}
+                className={`px-4 py-1.5 text-xs font-mono font-semibold transition-all cursor-pointer ${investMode === 'lump' ? 'bg-terminal-blue/20 text-terminal-blue' : 'text-[#666] hover:text-[#aaa]'}`}>
+                Lump Sum
+              </button>
+              <button onClick={() => setInvestMode('dca')}
+                className={`px-4 py-1.5 text-xs font-mono font-semibold transition-all cursor-pointer border-l border-[#2a2a2a] ${investMode === 'dca' ? 'bg-terminal-amber/20 text-terminal-amber' : 'text-[#666] hover:text-[#aaa]'}`}>
+                <Repeat size={12} className="inline mr-1" />DCA
+              </button>
+            </div>
           </div>
           {investMode === 'dca' && (
             <span className="text-xs text-[#555] font-mono animate-fade-in">Monthly {fmt(monthlyAmount, currency)}</span>
           )}
+          
+          <div className="flex items-center gap-3 md:border-l md:border-[#2a2a2a] md:pl-6">
+            <span className="text-xs text-[#666] uppercase tracking-wider flex items-center gap-1">Macro Overlay:</span>
+            <select
+              value={macroIndicator}
+              onChange={(e) => setMacroIndicator(e.target.value)}
+              className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-2 py-1.5 text-xs font-mono text-terminal-amber focus:outline-none focus:border-terminal-amber cursor-pointer"
+            >
+              <option value="none">None</option>
+              <option value="^TNX">10-Yr Treasury Yield (%)</option>
+              <option value="^VIX">Volatility S&P 500 (VIX)</option>
+              <option value="DX-Y.NYB">US Dollar Index (DXY)</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -409,7 +456,7 @@ export default function MainCalculator() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e1e1e" />
                   <XAxis dataKey="date" tick={{ fill: '#555', fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
                     tickLine={false} axisLine={{ stroke: '#1e1e1e' }} minTickGap={60} />
-                  <YAxis tick={{ fill: '#555', fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+                  <YAxis yAxisId="left" tick={{ fill: '#555', fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
                     tickLine={false} axisLine={false}
                     tickFormatter={v => {
                       const a = Math.abs(v);
@@ -421,15 +468,23 @@ export default function MainCalculator() {
                       if (a >= 0.01) return `${s}${v.toFixed(2)}`;
                       return `${s}${v.toFixed(4)}`;
                     }} />
+                  {macroIndicator !== 'none' && (
+                    <YAxis yAxisId="right" orientation="right" tick={{ fill: '#ffb700', fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+                      tickLine={false} axisLine={false} tickFormatter={v => v.toFixed(2)} />
+                  )}
                   <Tooltip content={<CustomTooltip currency={currency} investMode={investMode} />} />
-                  <ReferenceLine y={amount} stroke="#333" strokeDasharray="6 4" label={{ value: 'Invested', fill: '#555', fontSize: 10 }} />
-                  <Area type="monotone" dataKey="value"
+                  <ReferenceLine yAxisId="left" y={amount} stroke="#333" strokeDasharray="6 4" label={{ value: 'Invested', fill: '#555', fontSize: 10 }} />
+                  <Area yAxisId="left" type="monotone" dataKey="value"
                     stroke={positive ? '#00d26a' : '#ff3b3b'} strokeWidth={2}
                     fill={positive ? 'url(#gradGreen)' : 'url(#gradRed)'}
                     dot={false} activeDot={{ r: 4, fill: positive ? '#00d26a' : '#ff3b3b', strokeWidth: 0 }} />
                   {investMode === 'dca' && (
-                    <Line type="monotone" dataKey="dcaValue" stroke="#ffb700" strokeWidth={2}
+                    <Line yAxisId="left" type="monotone" dataKey="dcaValue" stroke="#ffb700" strokeWidth={2}
                       strokeDasharray="6 3" dot={false} name="DCA" />
+                  )}
+                  {macroIndicator !== 'none' && (
+                    <Line yAxisId="right" type="monotone" dataKey="macroValue" stroke="#ffb700" strokeWidth={1}
+                      strokeDasharray="3 3" dot={false} name={macroIndicator} />
                   )}
                 </ComposedChart>
               </ResponsiveContainer>

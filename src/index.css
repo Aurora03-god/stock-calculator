@@ -83,3 +83,45 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 .recharts-legend-item-text {
   color: #888 !important;
 }
+
+/* React Grid Layout Overrides */
+.react-grid-item.react-grid-placeholder {
+  background: rgba(0, 210, 106, 0.1) !important;
+  border: 1px dashed rgba(0, 210, 106, 0.5) !important;
+  opacity: 1;
+  border-radius: 16px;
+  transition-duration: 100ms;
+  z-index: 2;
+  user-select: none;
+}
+.react-resizable-handle::after {
+  content: "";
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #555;
+  border-bottom: 2px solid #555;
+  border-radius: 0 0 2px 0;
+  transition: border-color 0.2s;
+}
+.react-resizable-handle:hover::after {
+  border-color: #00d26a;
+}
+.drag-handle {
+  cursor: grab;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+.widget-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+}
+.widget-overlay-blur {
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(17,17,17,0) 0%, rgba(17,17,17,1) 90%);
+}
