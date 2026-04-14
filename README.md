@@ -25,6 +25,11 @@ A Bloomberg terminal-inspired stock investment return calculator with PDF report
 ## ✨ Features
 
 - 🗂️ **CSS Grid Widget Dashboard** — A stable, hardware-accelerated dashboard layout displaying the Main Calculator, DRIP Simulator, Portfolio Builder, and Future Forecast seamlessly on one screen.
+- 🔍 **Interactive Widget Maximize Mode** — Full-screen pop-out capability for all dashboard widgets to allow detailed, focused data analysis.
+- 📡 **Live Market Ticker** — Real-time cryptocurrency and stock price streaming at the top of the dashboard via Finnhub WebSocket.
+- 📰 **Live Market News Feed** — A dedicated scrollable widget fetching and displaying the latest market-moving news headlines.
+- 📍 **Event-Driven Chart Markers** — Smart overlay of major news events directly onto the stock charts for high-volatility trading days.
+- 🔐 **Secure API Management** — Safe local storage and `.env` configuration for Finnhub API keys.
 - 🔮 **Monte Carlo Future Forecast** — Projections of future portfolio values based on historical volatility and drift using Monte Carlo simulations.
 - 🧺 **Multi-Asset Portfolio Builder** — Backtest a custom basket of up to 5 assets with specified weights (Buy & Hold) tracking actual asset drift over time.
 - 💸 **DRIP Simulator** — Visualize dividend compounding by automatically reinvesting custom dividend yields.
@@ -59,6 +64,7 @@ A Bloomberg terminal-inspired stock investment return calculator with PDF report
 
 - **Yahoo Finance** unofficial API (`/v8/finance/chart/`)
 - **CORS Proxy** via [corsproxy.io](https://corsproxy.io/) to avoid browser blocking
+- **Finnhub API** for Real-time WebSocket prices and historical/general news.
 - No backend required — runs entirely in the browser
 
 ## 🚀 Getting Started
@@ -77,6 +83,10 @@ cd stock-calculator
 
 # Install dependencies
 npm install
+
+# Setup Environment Variables
+# Create a .env file and add your Finnhub API key
+echo "VITE_FINNHUB_API_KEY=your_api_key_here" > .env
 
 # Start development server
 npm run dev
@@ -142,6 +152,8 @@ Hover over the chart to see:
 
 ```
 stock-calculator/
+├── .env                # Environment Variables (ignored by Git)
+├── .gitignore          # Git ignore rules
 ├── index.html          # Entry HTML
 ├── package.json        # Dependencies & scripts
 ├── vite.config.js      # Vite configuration
@@ -150,7 +162,11 @@ stock-calculator/
 └── src/
     ├── main.jsx        # React entry point
     ├── index.css       # Global styles & Tailwind config
-    └── App.jsx         # Main application (all-in-one)
+    ├── App.jsx         # Main application (all-in-one)
+    └── components/
+        ├── LiveTickerTape.jsx   # Real-time WebSockets Ticker
+        ├── LiveNewsFeed.jsx     # Live Market News Widget
+        └── MainCalculator.jsx   # Contains Event-Driven Chart Markers
 ```
 
 ## ⚠️ Disclaimer

@@ -6,13 +6,13 @@ import {
 import {
   Search, Download, TrendingUp, TrendingDown, Calendar, DollarSign,
   BarChart3, Activity, Loader2, AlertTriangle, Shield, Gauge,
-  Link2, Check, Repeat
+  Link2, Check, Repeat, Settings
 } from 'lucide-react';
 
 import { fmt, fmtPct, defaultStart, defaultEnd, fmtDate } from '../utils/format';
 import {
   fetchStockData, calculateReturns, calculateDCA,
-  getBenchmarkTicker, calculateNormalizedReturns
+  getBenchmarkTicker, calculateNormalizedReturns, fetchCompanyNews
 } from '../utils/calculate';
 import { downloadPDF } from '../utils/pdfExport';
 import BenchmarkChart, { BenchmarkSelector, BENCHMARK_PRESETS } from './BenchmarkChart';
@@ -50,6 +50,14 @@ const CustomTooltip = ({ active, payload, currency, investMode }) => {
         <p className="text-xs text-[#888] mt-1 border-t border-[#2a2a2a] pt-1">
           Overlay: <span className="font-mono font-semibold text-terminal-amber">{d.macroValue.toFixed(2)}</span>
         </p>
+      )}
+      {d.news && (
+        <div className="mt-2 pt-2 border-t border-[#2a2a2a] max-w-xs animate-fade-in">
+          <p className="text-xs font-bold text-terminal-amber break-words mb-1 flex items-start gap-1">
+            <span>📰</span> <span className="flex-1">{d.news.headline}</span>
+          </p>
+          <p className="text-[10px] text-[#888] leading-tight break-words line-clamp-3">{d.news.summary}</p>
+        </div>
       )}
     </div>
   );
@@ -133,6 +141,13 @@ export default function MainCalculator() {
   const [macroIndicator, setMacroIndicator] = useState('none');
   const [macroDataMap, setMacroDataMap] = useState(new Map());
 
+  /* News State */
+  // The user provided standard key format but duplicated. Taking the first 20 or full? 
+  // Finnhub allows API key up to what we pass. Let's just store the exact string provided.
+  const [finnhubKey, setFinnhubKey] = useState(() => localStorage.getItem('finnhub_key') || import.meta.env.VITE_FINNHUB_API_KEY || '');
+  const [newsData, setNewsData] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+
   /* ─── Fetch Macro Data ─── */
   useEffect(() => {
     if (!rawStockData || macroIndicator === 'none') {
@@ -208,6 +223,7 @@ export default function MainCalculator() {
     setDcaData(null);
     setDcaSummary(null);
     setBenchmarkDatasets([]);
+    setNewsData(null);
     if (!ticker.trim()) { setError('종목 코드를 입력하세요.'); return; }
     setLoading(true);
 
@@ -233,6 +249,22 @@ export default function MainCalculator() {
         setSelectedBenchmarks(currentBms);
       }
       await fetchBenchmarks(currentBms, timestamps, closes, startDate, endDate);
+
+      // Finnhub News
+      if (finnhubKey) {
+        try {
+          const newsRes = await fetchCompanyNews(ticker, startDate, endDate, finnhubKey);
+          const map = new Map();
+          for (const n of newsRes) {
+            const d = new Date(n.datetime * 1000).toISOString().split('T')[0];
+            if (!map.has(d)) map.set(d, []);
+            map.get(d).push(n);
+          }
+          setNewsData(map);
+        } catch (e) {
+          console.warn("News fetch failed", e);
+        }
+      }
     } catch (e) {
       setError(`데이터를 가져올 수 없습니다: ${e.message}`);
     } finally {
@@ -264,13 +296,29 @@ export default function MainCalculator() {
     if (!chartData) return null;
     const isDca = investMode === 'dca' && dcaData;
     const dcaMap = isDca ? new Map(dcaData.map(d => [d.date, d])) : null;
-    return chartData.map(d => ({
-      ...d,
-      dcaValue: isDca ? (dcaMap.get(d.date)?.value ?? null) : null,
-      dcaInvested: isDca ? (dcaMap.get(d.date)?.invested ?? null) : null,
-      macroValue: macroIndicator !== 'none' ? (macroDataMap.get(d.date) ?? null) : null,
-    }));
-  }, [chartData, dcaData, investMode, macroIndicator, macroDataMap]);
+    return chartData.map((d, i) => {
+      let dailyMove = 0;
+      if (i > 0) {
+        dailyMove = ((d.price - chartData[i-1].price) / chartData[i-1].price) * 100;
+      }
+      
+      const dayNews = (newsData && newsData.has(d.date)) ? newsData.get(d.date) : null;
+      let importantNews = null;
+      // ±4% daily move + new exists => mark it!
+      if (Math.abs(dailyMove) >= 4.0 && dayNews?.length > 0) {
+        importantNews = dayNews[0];
+      }
+
+      return {
+        ...d,
+        dailyMove,
+        dcaValue: isDca ? (dcaMap.get(d.date)?.value ?? null) : null,
+        dcaInvested: isDca ? (dcaMap.get(d.date)?.invested ?? null) : null,
+        macroValue: macroIndicator !== 'none' ? (macroDataMap.get(d.date) ?? null) : null,
+        news: importantNews,
+      };
+    });
+  }, [chartData, dcaData, investMode, macroIndicator, macroDataMap, newsData]);
 
   const positive = summary ? summary.returnPct >= 0 : true;
 
@@ -363,7 +411,29 @@ export default function MainCalculator() {
               <option value="DX-Y.NYB">US Dollar Index (DXY)</option>
             </select>
           </div>
+
+          <button onClick={() => setShowSettings(!showSettings)} className="text-[#666] hover:text-[#bbb] transition-colors flex items-center md:border-l md:border-[#2a2a2a] md:pl-6 cursor-pointer">
+            <Settings size={16} />
+          </button>
         </div>
+        
+        {/* API Key Modal / Expand */}
+        {showSettings && (
+          <div className="mt-4 pt-4 border-t border-[#2a2a2a] animate-fade-in flex items-center gap-3">
+            <label className="text-xs text-[#666] uppercase tracking-wider flex-shrink-0">Finnhub API Key:</label>
+            <input 
+              type="password"
+              placeholder="Leave blank to disable news"
+              value={finnhubKey}
+              onChange={(e) => {
+                setFinnhubKey(e.target.value);
+                localStorage.setItem('finnhub_key', e.target.value);
+              }}
+              className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 font-mono text-sm text-terminal-text focus:outline-none focus:border-terminal-amber transition-colors flex-1 max-w-[300px]"
+            />
+            <span className="text-[10px] text-[#555]">Provides free event-driven news markers (max 1yr history)</span>
+          </div>
+        )}
       </div>
 
       {/* ── ERROR ── */}
@@ -486,6 +556,9 @@ export default function MainCalculator() {
                     <Line yAxisId="right" type="monotone" dataKey="macroValue" stroke="#ffb700" strokeWidth={1}
                       strokeDasharray="3 3" dot={false} name={macroIndicator} />
                   )}
+                  {mergedChartData && mergedChartData.filter(d => d.news).map((d) => (
+                    <ReferenceLine key={d.date} yAxisId="left" x={d.date} stroke="#ffb700" strokeOpacity={0.6} strokeWidth={1} strokeDasharray="3 3" />
+                  ))}
                 </ComposedChart>
               </ResponsiveContainer>
             </div>

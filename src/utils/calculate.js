@@ -122,3 +122,21 @@ export function calculateNormalizedReturns(timestamps, closes) {
     returnPct: closes[i] != null ? ((closes[i] - initial) / initial) * 100 : null,
   }));
 }
+
+export async function fetchCompanyNews(ticker, startDate, endDate, apiKey) {
+  if (!apiKey) return [];
+  let symbol = ticker.trim().toUpperCase();
+  // Remove Yahoo finance suffixes like .KS for Finnhub compatibility
+  if (symbol.includes('.')) symbol = symbol.split('.')[0];
+  
+  try {
+    const url = `https://finnhub.io/api/v1/company-news?symbol=${symbol}&from=${startDate}&to=${endDate}&token=${apiKey}`;
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const json = await res.json();
+    return Array.isArray(json) ? json : [];
+  } catch (e) {
+    console.warn("Finnhub API Error:", e);
+    return [];
+  }
+}
