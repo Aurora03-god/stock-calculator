@@ -7,6 +7,7 @@ import PortfolioSimulator from './components/PortfolioSimulator';
 import MonteCarloSimulator from './components/MonteCarloSimulator';
 import LiveTickerTape from './components/LiveTickerTape';
 import LiveNewsFeed from './components/LiveNewsFeed';
+import SectorTreemap from './components/SectorTreemap';
 
 const Widget = ({ title, children, className = '' }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -91,6 +92,11 @@ export default function App() {
         <div className="xl:col-span-4">
           <Widget title="Portfolio Builder">
             <PortfolioSimulator />
+          </Widget>
+        </div>
+        <div className="xl:col-span-12">
+          <Widget title="S&P 500 Sector Heatmap">
+            <SectorTreemap />
           </Widget>
         </div>
         <div className="xl:col-span-12">

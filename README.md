@@ -12,11 +12,11 @@ A Bloomberg terminal-inspired stock investment return calculator with PDF report
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-**[🔗 Live Demo](https://stock-calculator.vercel.app)** · **[📄 배포 가이드](./DEPLOY.md)**
+**[🔗 Live Demo](https://stock-calculator.vercel.app)** · **[📄 배포 가이드](./docs/DEPLOY.md)**
 
 <br />
 
-<img src="./preview.png" alt="Stock Return Calculator Preview" width="800" />
+<img src="./assets/preview.png" alt="Stock Return Calculator Preview" width="800" />
 
 </div>
 
@@ -24,9 +24,10 @@ A Bloomberg terminal-inspired stock investment return calculator with PDF report
 
 ## ✨ Features
 
-- 🗂️ **CSS Grid Widget Dashboard** — A stable, hardware-accelerated dashboard layout displaying the Main Calculator, DRIP Simulator, Portfolio Builder, and Future Forecast seamlessly on one screen.
+- 🗂️ **CSS Grid Widget Dashboard** — A stable, hardware-accelerated dashboard layout displaying the Main Calculator, DRIP Simulator, Portfolio Builder, Sector Heatmap, and Future Forecast seamlessly on one screen.
 - 🔍 **Interactive Widget Maximize Mode** — Full-screen pop-out capability for all dashboard widgets to allow detailed, focused data analysis.
-- 📡 **Live Market Ticker** — Real-time cryptocurrency and stock price streaming at the top of the dashboard via Finnhub WebSocket.
+- 📡 **Live Market Ticker Tape** — Infinite-scrolling marquee banner displaying real-time prices for **22 assets**: BTC, ETH, SOL, XRP, DOGE (crypto), AAPL, MSFT, NVDA, GOOGL, AMZN, TSLA, META (stocks), S&P 500, DOW, NASDAQ, KOSPI, Nikkei, Hang Seng, FTSE, DAX (global indices), Gold, Crude Oil (commodities). Powered by Yahoo Finance — **no API key required**.
+- 🗺️ **S&P 500 Sector Heatmap (Treemap)** — Market-cap-weighted treemap visualization of **50 top companies** across 11 GICS sectors. Color-coded by daily performance (red ↔ green). Supports 1D/1W/1M/YTD period toggle, sector zoom-in, hover tooltips, and auto-refresh every 5 minutes.
 - 📰 **Live Market News Feed** — A dedicated scrollable widget fetching and displaying the latest market-moving news headlines.
 - 📍 **Event-Driven Chart Markers** — Smart overlay of major news events directly onto the stock charts for high-volatility trading days.
 - 🔐 **Secure API Management** — Safe local storage and `.env` configuration for Finnhub API keys.
@@ -114,7 +115,7 @@ npm i -g vercel
 vercel --prod
 ```
 
-> 📖 자세한 배포 가이드는 [DEPLOY.md](./DEPLOY.md)를 참고하세요.
+> 📖 자세한 배포 가이드는 [DEPLOY.md](./docs/DEPLOY.md)를 참고하세요.
 
 ## 📄 PDF Report
 
@@ -131,7 +132,7 @@ The PDF report includes **two pages**:
 <summary>Click to expand</summary>
 
 ### Main Dashboard
-<img src="./preview.png" alt="Dashboard" width="700" />
+<img src="./assets/preview.png" alt="Dashboard" width="700" />
 
 ### Summary Cards
 - Final portfolio value with profit/loss
@@ -157,16 +158,30 @@ stock-calculator/
 ├── index.html          # Entry HTML
 ├── package.json        # Dependencies & scripts
 ├── vite.config.js      # Vite configuration
-├── preview.png         # Preview screenshot
 ├── run.bat             # Windows quick launcher
+├── assets/
+│   └── preview.png     # Preview screenshot
+├── docs/
+│   └── DEPLOY.md       # Deployment guide
 └── src/
     ├── main.jsx        # React entry point
-    ├── index.css       # Global styles & Tailwind config
-    ├── App.jsx         # Main application (all-in-one)
+    ├── index.css       # Global styles, Tailwind config & ticker marquee CSS
+    ├── App.jsx         # Widget-based dashboard layout
+    ├── utils/
+    │   ├── calculate.js    # Core financial calculations & Yahoo Finance API
+    │   ├── format.js       # Number, date, currency formatting
+    │   └── pdfExport.js    # PDF report generation
     └── components/
-        ├── LiveTickerTape.jsx   # Real-time WebSockets Ticker
-        ├── LiveNewsFeed.jsx     # Live Market News Widget
-        └── MainCalculator.jsx   # Contains Event-Driven Chart Markers
+        ├── LiveTickerTape.jsx      # Infinite-scroll marquee (22 global assets)
+        ├── LiveNewsFeed.jsx        # Live Market News Widget
+        ├── SectorTreemap.jsx       # S&P 500 Sector Heatmap (50 companies)
+        ├── MainCalculator.jsx      # Main chart, inputs & event markers
+        ├── BenchmarkChart.jsx      # Multi-benchmark comparison charts
+        ├── ReturnsHeatmap.jsx      # Monthly returns heatmap matrix
+        ├── DataTable.jsx           # Historical data table + CSV export
+        ├── DripCalculator.jsx      # DRIP (Dividend Reinvestment) simulator
+        ├── PortfolioSimulator.jsx  # Multi-asset portfolio builder
+        └── MonteCarloSimulator.jsx # Monte Carlo future forecast
 ```
 
 ## ⚠️ Disclaimer
