@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Maximize2, Minimize2 } from 'lucide-react';
+import { Routes, Route, Link } from 'react-router-dom';
+import { LayoutDashboard, Maximize2, Minimize2, DollarSign, Globe } from 'lucide-react';
 
 import MainCalculator from './components/MainCalculator';
 import DripCalculator from './components/DripCalculator';
@@ -8,6 +9,8 @@ import MonteCarloSimulator from './components/MonteCarloSimulator';
 import LiveTickerTape from './components/LiveTickerTape';
 import LiveNewsFeed from './components/LiveNewsFeed';
 import SectorTreemap from './components/SectorTreemap';
+import DividendCalendar from './components/DividendCalendar';
+import EconomicCalendar from './components/EconomicCalendar';
 
 const Widget = ({ title, children, className = '' }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -51,7 +54,7 @@ const Widget = ({ title, children, className = '' }) => {
   );
 };
 
-export default function App() {
+function Dashboard() {
   return (
     <div className="min-h-screen flex flex-col relative bg-terminal-bg">
       <LiveTickerTape />
@@ -67,8 +70,22 @@ export default function App() {
           </div>
           <p className="text-sm text-[#555] ml-5">전문가용 투자 분석 및 백테스트 대시보드</p>
         </div>
-        <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono font-semibold text-terminal-green bg-terminal-green/10 border border-terminal-green/30">
-          <LayoutDashboard size={14} /> Widget Dashboard Active
+        <div className="flex items-center gap-2">
+          <Link
+            to="/dividend"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-mono font-semibold text-yellow-400 bg-yellow-400/10 border border-yellow-400/30 hover:bg-yellow-400/20 hover:border-yellow-400/50 transition-all cursor-pointer"
+          >
+            <DollarSign size={14} /> Dividend Calendar
+          </Link>
+          <Link
+            to="/economic"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-mono font-semibold text-blue-400 bg-blue-400/10 border border-blue-400/30 hover:bg-blue-400/20 hover:border-blue-400/50 transition-all cursor-pointer"
+          >
+            <Globe size={14} /> Economic Calendar
+          </Link>
+          <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono font-semibold text-terminal-green bg-terminal-green/10 border border-terminal-green/30">
+            <LayoutDashboard size={14} /> Dashboard
+          </div>
         </div>
       </header>
 
@@ -112,5 +129,15 @@ export default function App() {
       </footer>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/dividend" element={<DividendCalendar />} />
+      <Route path="/economic" element={<EconomicCalendar />} />
+    </Routes>
   );
 }

@@ -2,9 +2,9 @@
 
 # 📈 Stock Return Calculator
 
-**주식 투자 수익률 계산기**
+**주식 투자 수익률 계산기 & 금융 대시보드**
 
-A Bloomberg terminal-inspired stock investment return calculator with PDF report generation.
+A Bloomberg terminal-inspired stock investment dashboard with dividend tracking, economic calendar, and PDF report generation.
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
@@ -24,49 +24,85 @@ A Bloomberg terminal-inspired stock investment return calculator with PDF report
 
 ## ✨ Features
 
-- 🗂️ **CSS Grid Widget Dashboard** — A stable, hardware-accelerated dashboard layout displaying the Main Calculator, DRIP Simulator, Portfolio Builder, Sector Heatmap, and Future Forecast seamlessly on one screen.
-- 🔍 **Interactive Widget Maximize Mode** — Full-screen pop-out capability for all dashboard widgets to allow detailed, focused data analysis.
-- 📡 **Live Market Ticker Tape** — Infinite-scrolling marquee banner displaying real-time prices for **22 assets**: BTC, ETH, SOL, XRP, DOGE (crypto), AAPL, MSFT, NVDA, GOOGL, AMZN, TSLA, META (stocks), S&P 500, DOW, NASDAQ, KOSPI, Nikkei, Hang Seng, FTSE, DAX (global indices), Gold, Crude Oil (commodities). Powered by Yahoo Finance — **no API key required**.
-- 🗺️ **S&P 500 Sector Heatmap (Treemap)** — Market-cap-weighted treemap visualization of **50 top companies** across 11 GICS sectors. Color-coded by daily performance (red ↔ green). Supports 1D/1W/1M/YTD period toggle, sector zoom-in, hover tooltips, and auto-refresh every 5 minutes.
-- 📰 **Live Market News Feed** — A dedicated scrollable widget fetching and displaying the latest market-moving news headlines.
-- 📍 **Event-Driven Chart Markers** — Smart overlay of major news events directly onto the stock charts for high-volatility trading days.
-- 🔐 **Secure API Management** — Safe local storage and `.env` configuration for Finnhub API keys.
-- 🔮 **Monte Carlo Future Forecast** — Projections of future portfolio values based on historical volatility and drift using Monte Carlo simulations.
-- 🧺 **Multi-Asset Portfolio Builder** — Backtest a custom basket of up to 5 assets with specified weights (Buy & Hold) tracking actual asset drift over time.
-- 💸 **DRIP Simulator** — Visualize dividend compounding by automatically reinvesting custom dividend yields.
-- 🔍 **Stock Ticker Search** — Supports global tickers (e.g. `AAPL`, `TSLA`, `005930.KS`)
-- 📅 **Date Range & Presets** — Pick custom start/end dates or use quick presets (1M, YTD, 1Y, MAX, etc.)
-- 🔄 **Investment Mode Toggle** — Switch between **Lump Sum** and **DCA** (Dollar Cost Averaging) strategies
-- 📈 **Benchmark Comparison** — Compare stock performance against major indices (S&P 500, NASDAQ, Dow Jones, KOSPI) or custom tickers
-- 🗓️ **Monthly Returns Heatmap** — Professional Bloomberg-style monthly/yearly returns heatmap matrix
-- 🗄️ **Historical Data Table** — Detailed daily data table with **CSV Export** functionality
-- 🪙 **Currency Toggle & Crypto** — Switch between `USD` and `KRW`, with full support for cryptocurrency decimals
-- 📊 **Interactive Dual-Axis Chart** — Recharts-powered area and line charts featuring merged DCA lines, hover tooltips, and secondary Y-axis.
-- 🌍 **Macro-Economic Overlays** — Compare stock performance directly against key macro indicators (e.g., 10-Yr Treasury Yield `^TNX`, VIX `^VIX`, US Dollar Index `DX-Y.NYB`).
-- 📋 **Advanced Summary Cards** — Final value, Total P&L, Best/Worst day, Max Drawdown, and Sharpe Ratio
-- 🔗 **Shareable Links** — Easily share your portfolio configuration via custom URL parameters
-- 📄 **PDF Report Export** — Generates bilingual PDF (Korean 🇰🇷 + English 🇺🇸) with chart & analysis
-- 🖥️ **Bloomberg Terminal Theme** — Dark mode, monospace fonts, terminal aesthetics
-- 📱 **Responsive Layout** — Works seamlessly across desktop and mobile devices
+### 🗂️ Dashboard
+- **CSS Grid Widget Dashboard** — A stable, hardware-accelerated dashboard layout displaying the Main Calculator, DRIP Simulator, Portfolio Builder, Sector Heatmap, and Future Forecast seamlessly on one screen.
+- **Interactive Widget Maximize Mode** — Full-screen pop-out capability for all dashboard widgets to allow detailed, focused data analysis.
+- **URL-Based Routing** — React Router integration with clean URLs (`/`, `/dividend`, `/economic`). Supports browser back/forward navigation and direct URL access.
+
+### 📡 Live Data
+- **Live Market Ticker Tape** — Infinite-scrolling marquee displaying real-time prices for **22 assets**: BTC, ETH, SOL, XRP, DOGE (crypto), AAPL, MSFT, NVDA, GOOGL, AMZN, TSLA, META (stocks), S&P 500, DOW, NASDAQ, KOSPI, Nikkei, Hang Seng, FTSE, DAX (global indices), Gold, Crude Oil (commodities). Powered by Yahoo Finance — **no API key required**.
+- **Live Market News Feed** — A dedicated scrollable widget fetching and displaying the latest market-moving news headlines via Finnhub API.
+- **Event-Driven Chart Markers** — Smart overlay of major news events directly onto the stock charts for high-volatility trading days.
+
+### 💰 Dividend Calendar *(NEW)*
+- **Multi-Symbol Tracking** — Add and track dividend schedules for multiple stocks and ETFs simultaneously (e.g. `SCHD`, `JEPQ`, `JEPI`, `AAPL`, `KO`).
+- **Interactive Monthly Calendar** — Color-coded calendar grid showing ex-dividend dates with per-symbol markers and hover details.
+- **ETF & Stock Support** — Full support for dividend-paying ETFs (e.g. SCHD, JEPQ, JEPI, VYM, HDV, QYLD) and individual stocks.
+- **Summary Cards** — Real-time display of dividend yield, annual payout, current price, and payment frequency for each tracked symbol.
+- **Quick Add Presets** — One-click buttons to add popular dividend stocks and ETFs.
+- **Recent Dividends Panel** — Side panel showing the 20 most recent dividend events across all tracked symbols.
+
+### 🌍 Economic Calendar *(NEW)*
+- **TradingView Widget Integration** — Professional-grade economic calendar powered by TradingView's free embedded widget.
+- **Interactive Country Filters** — Toggle buttons for 10 countries/regions (🇺🇸 US, 🇰🇷 KR, 🇪🇺 EU, 🇯🇵 JP, 🇨🇳 CN, 🇬🇧 UK, 🇩🇪 DE, 🇨🇦 CA, 🇦🇺 AU, 🇫🇷 FR) with real-time widget refresh.
+- **Impact-Level Filtering** — View Low, Medium, and High impact events (FOMC, CPI, Employment Reports, etc.).
+- **All/Reset Controls** — Quickly select all countries or reset to defaults.
+
+### 📊 Analysis Tools
+- **S&P 500 Sector Heatmap (Treemap)** — Market-cap-weighted treemap of **50 top companies** across 11 GICS sectors. Color-coded by performance with 1D/1W/1M/YTD toggle.
+- **Monte Carlo Future Forecast** — Projections of future portfolio values based on historical volatility and drift using Monte Carlo simulations.
+- **Multi-Asset Portfolio Builder** — Backtest a custom basket of up to 5 assets with specified weights tracking actual asset drift over time.
+- **DRIP Simulator** — Visualize dividend compounding by automatically reinvesting custom dividend yields.
+- **Benchmark Comparison** — Compare stock performance against major indices (S&P 500, NASDAQ, Dow Jones, KOSPI) or custom tickers.
+- **Macro-Economic Overlays** — Compare stock performance against key macro indicators (10-Yr Treasury `^TNX`, VIX `^VIX`, US Dollar Index `DX-Y.NYB`).
+
+### 🔧 Core Features
+- **Stock Ticker Search** — Supports global tickers (e.g. `AAPL`, `TSLA`, `005930.KS`)
+- **Date Range & Presets** — Pick custom start/end dates or use quick presets (1M, YTD, 1Y, MAX, etc.)
+- **Investment Mode Toggle** — Switch between **Lump Sum** and **DCA** (Dollar Cost Averaging) strategies
+- **Monthly Returns Heatmap** — Professional Bloomberg-style monthly/yearly returns heatmap matrix
+- **Historical Data Table** — Detailed daily data table with **CSV Export**
+- **Currency Toggle & Crypto** — Switch between `USD` and `KRW`, with full cryptocurrency decimal support
+- **Interactive Dual-Axis Chart** — Recharts-powered area/line charts with DCA lines, hover tooltips, and secondary Y-axis
+- **Advanced Summary Cards** — Final value, Total P&L, Best/Worst day, Max Drawdown, and Sharpe Ratio
+- **Shareable Links** — Share your portfolio configuration via custom URL parameters
+- **PDF Report Export** — Bilingual PDF (Korean 🇰🇷 + English 🇺🇸) with chart & analysis
+- **Bloomberg Terminal Theme** — Dark mode, monospace fonts, terminal aesthetics
+- **Responsive Layout** — Works seamlessly across desktop and mobile devices
+- **Secure API Management** — Safe `.env` configuration for Finnhub API keys
 
 ## 🛠️ Tech Stack
 
 | Technology | Purpose |
 |---|---|
 | [React 19](https://react.dev/) | UI Framework |
+| [React Router 7](https://reactrouter.com/) | Client-Side Routing |
 | [Vite 8](https://vitejs.dev/) | Build Tool |
 | [Tailwind CSS 4](https://tailwindcss.com/) | Styling |
 | [Recharts](https://recharts.org/) | Chart Visualization |
+| [TradingView Widget](https://www.tradingview.com/widget/) | Economic Calendar |
 | [jsPDF](https://github.com/parallax/jsPDF) | PDF Generation |
 | [html2canvas](https://html2canvas.hertzen.com/) | HTML to Image Capture |
 | [Lucide React](https://lucide.dev/) | Icons |
 
 ## 📡 Data Source
 
-- **Yahoo Finance** unofficial API (`/v8/finance/chart/`)
-- **CORS Proxy** via [corsproxy.io](https://corsproxy.io/) to avoid browser blocking
-- **Finnhub API** for Real-time WebSocket prices and historical/general news.
-- No backend required — runs entirely in the browser
+| Source | Used For |
+|---|---|
+| **Yahoo Finance** (unofficial API) | Stock prices, historical data, dividend events (`events=div`) |
+| **Finnhub API** | Real-time WebSocket prices, company news |
+| **TradingView** (free widget) | Economic calendar (FOMC, CPI, Employment, etc.) |
+| **CORS Proxy** ([corsproxy.io](https://corsproxy.io/)) | Browser CORS bypass |
+
+> No backend required — runs entirely in the browser.
+
+## 🗺️ Routes
+
+| Path | Page | Description |
+|---|---|---|
+| `/` | Dashboard | Main widget dashboard with all tools |
+| `/dividend` | Dividend Calendar | Track dividend schedules for stocks & ETFs |
+| `/economic` | Economic Calendar | Global economic events with country filters |
 
 ## 🚀 Getting Started
 
@@ -94,6 +130,12 @@ npm run dev
 ```
 
 The app will be available at `http://localhost:5173/`
+
+| Route | URL |
+|---|---|
+| Dashboard | `http://localhost:5173/` |
+| Dividend Calendar | `http://localhost:5173/dividend` |
+| Economic Calendar | `http://localhost:5173/economic` |
 
 ### Quick Start (Windows)
 
@@ -164,9 +206,9 @@ stock-calculator/
 ├── docs/
 │   └── DEPLOY.md       # Deployment guide
 └── src/
-    ├── main.jsx        # React entry point
+    ├── main.jsx        # React entry point (BrowserRouter wrapper)
     ├── index.css       # Global styles, Tailwind config & ticker marquee CSS
-    ├── App.jsx         # Widget-based dashboard layout
+    ├── App.jsx         # React Router routes & widget dashboard layout
     ├── utils/
     │   ├── calculate.js    # Core financial calculations & Yahoo Finance API
     │   ├── format.js       # Number, date, currency formatting
@@ -175,6 +217,8 @@ stock-calculator/
         ├── LiveTickerTape.jsx      # Infinite-scroll marquee (22 global assets)
         ├── LiveNewsFeed.jsx        # Live Market News Widget
         ├── SectorTreemap.jsx       # S&P 500 Sector Heatmap (50 companies)
+        ├── DividendCalendar.jsx    # 💰 Dividend Calendar (Stocks & ETFs)
+        ├── EconomicCalendar.jsx    # 🌍 Economic Calendar (TradingView)
         ├── MainCalculator.jsx      # Main chart, inputs & event markers
         ├── BenchmarkChart.jsx      # Multi-benchmark comparison charts
         ├── ReturnsHeatmap.jsx      # Monthly returns heatmap matrix
