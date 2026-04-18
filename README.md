@@ -4,7 +4,7 @@
 
 **주식 투자 수익률 계산기 & 금융 대시보드**
 
-A Bloomberg terminal-inspired stock investment dashboard with dividend tracking, economic calendar, and PDF report generation.
+A Bloomberg terminal-inspired stock investment dashboard with real-time charts, dividend tracking, economic calendar, and PDF report generation.
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
@@ -12,7 +12,7 @@ A Bloomberg terminal-inspired stock investment dashboard with dividend tracking,
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-**[🔗 Live Demo](https://stock-calculator.vercel.app)** · **[📄 배포 가이드](./docs/DEPLOY.md)**
+**[📄 배포 가이드](./docs/DEPLOY.md)**
 
 <br />
 
@@ -27,7 +27,7 @@ A Bloomberg terminal-inspired stock investment dashboard with dividend tracking,
 ### 🗂️ Dashboard
 - **CSS Grid Widget Dashboard** — A stable, hardware-accelerated dashboard layout displaying the Main Calculator, DRIP Simulator, Portfolio Builder, Sector Heatmap, and Future Forecast seamlessly on one screen.
 - **Interactive Widget Maximize Mode** — Full-screen pop-out capability for all dashboard widgets to allow detailed, focused data analysis.
-- **URL-Based Routing** — React Router integration with clean URLs (`/`, `/dividend`, `/economic`). Supports browser back/forward navigation and direct URL access.
+- **URL-Based Routing** — React Router integration with clean URLs (`/`, `/chart`, `/dividend`, `/economic`). Supports browser back/forward navigation and direct URL access.
 
 ### 📡 Live Data
 - **Live Market Ticker Tape** — Infinite-scrolling marquee displaying real-time prices for **22 assets**: BTC, ETH, SOL, XRP, DOGE (crypto), AAPL, MSFT, NVDA, GOOGL, AMZN, TSLA, META (stocks), S&P 500, DOW, NASDAQ, KOSPI, Nikkei, Hang Seng, FTSE, DAX (global indices), Gold, Crude Oil (commodities). Powered by Yahoo Finance — **no API key required**.
@@ -42,7 +42,16 @@ A Bloomberg terminal-inspired stock investment dashboard with dividend tracking,
 - **Quick Add Presets** — One-click buttons to add popular dividend stocks and ETFs.
 - **Recent Dividends Panel** — Side panel showing the 20 most recent dividend events across all tracked symbols.
 
-### 🌍 Economic Calendar *(NEW)*
+### 📈 Live Chart *(NEW)*
+- **TradingView Advanced Chart** — Professional-grade real-time candlestick chart with volume, MACD, and RSI indicators built-in. Powered by TradingView's free widget — **no API key required**.
+- **Universal Symbol Search** — Search and view any stock (`AAPL`, `TSLA`), cryptocurrency (`BINANCE:BTCUSDT`, `BINANCE:ETHUSDT`), index (`SP:SPX`, `KRX:KOSPI`), or commodity (`TVC:GOLD`).
+- **8 Timeframe Intervals** — Switch between 1m, 5m, 15m, 1H, 4H, 1D, 1W, and 1M intervals.
+- **Quick Symbol Sidebar** — Tabbed sidebar with popular Stocks, Crypto, and Indices for one-click chart switching.
+- **Recent Search History** — Automatically saves and displays the last 10 searched symbols via `localStorage`.
+- **100+ Technical Indicators** — Access to all TradingView built-in indicators including SMA, EMA, Bollinger Bands, Ichimoku, and more.
+- **Drawing Tools** — Trendlines, Fibonacci retracements, and other professional charting tools.
+
+### 🌍 Economic Calendar
 - **TradingView Widget Integration** — Professional-grade economic calendar powered by TradingView's free embedded widget.
 - **Interactive Country Filters** — Toggle buttons for 10 countries/regions (🇺🇸 US, 🇰🇷 KR, 🇪🇺 EU, 🇯🇵 JP, 🇨🇳 CN, 🇬🇧 UK, 🇩🇪 DE, 🇨🇦 CA, 🇦🇺 AU, 🇫🇷 FR) with real-time widget refresh.
 - **Impact-Level Filtering** — View Low, Medium, and High impact events (FOMC, CPI, Employment Reports, etc.).
@@ -80,7 +89,7 @@ A Bloomberg terminal-inspired stock investment dashboard with dividend tracking,
 | [Vite 8](https://vitejs.dev/) | Build Tool |
 | [Tailwind CSS 4](https://tailwindcss.com/) | Styling |
 | [Recharts](https://recharts.org/) | Chart Visualization |
-| [TradingView Widget](https://www.tradingview.com/widget/) | Economic Calendar |
+| [TradingView Widget](https://www.tradingview.com/widget/) | Live Chart & Economic Calendar |
 | [jsPDF](https://github.com/parallax/jsPDF) | PDF Generation |
 | [html2canvas](https://html2canvas.hertzen.com/) | HTML to Image Capture |
 | [Lucide React](https://lucide.dev/) | Icons |
@@ -91,7 +100,7 @@ A Bloomberg terminal-inspired stock investment dashboard with dividend tracking,
 |---|---|
 | **Yahoo Finance** (unofficial API) | Stock prices, historical data, dividend events (`events=div`) |
 | **Finnhub API** | Real-time WebSocket prices, company news |
-| **TradingView** (free widget) | Economic calendar (FOMC, CPI, Employment, etc.) |
+| **TradingView** (free widget) | Live real-time charts (Advanced Chart), Economic calendar (FOMC, CPI, Employment, etc.) |
 | **CORS Proxy** ([corsproxy.io](https://corsproxy.io/)) | Browser CORS bypass |
 
 > No backend required — runs entirely in the browser.
@@ -101,6 +110,7 @@ A Bloomberg terminal-inspired stock investment dashboard with dividend tracking,
 | Path | Page | Description |
 |---|---|---|
 | `/` | Dashboard | Main widget dashboard with all tools |
+| `/chart` | Live Chart | Real-time TradingView charts for stocks, crypto & indices |
 | `/dividend` | Dividend Calendar | Track dividend schedules for stocks & ETFs |
 | `/economic` | Economic Calendar | Global economic events with country filters |
 
@@ -134,6 +144,7 @@ The app will be available at `http://localhost:5173/`
 | Route | URL |
 |---|---|
 | Dashboard | `http://localhost:5173/` |
+| Live Chart | `http://localhost:5173/chart` |
 | Dividend Calendar | `http://localhost:5173/dividend` |
 | Economic Calendar | `http://localhost:5173/economic` |
 
@@ -217,6 +228,7 @@ stock-calculator/
         ├── LiveTickerTape.jsx      # Infinite-scroll marquee (22 global assets)
         ├── LiveNewsFeed.jsx        # Live Market News Widget
         ├── SectorTreemap.jsx       # S&P 500 Sector Heatmap (50 companies)
+        ├── LiveChart.jsx           # 📈 Live Chart (TradingView Advanced Chart)
         ├── DividendCalendar.jsx    # 💰 Dividend Calendar (Stocks & ETFs)
         ├── EconomicCalendar.jsx    # 🌍 Economic Calendar (TradingView)
         ├── MainCalculator.jsx      # Main chart, inputs & event markers

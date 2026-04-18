@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import { LayoutDashboard, Maximize2, Minimize2, DollarSign, Globe } from 'lucide-react';
+import { LayoutDashboard, Maximize2, Minimize2, DollarSign, Globe, LineChart } from 'lucide-react';
 
 import MainCalculator from './components/MainCalculator';
 import DripCalculator from './components/DripCalculator';
@@ -11,6 +11,7 @@ import LiveNewsFeed from './components/LiveNewsFeed';
 import SectorTreemap from './components/SectorTreemap';
 import DividendCalendar from './components/DividendCalendar';
 import EconomicCalendar from './components/EconomicCalendar';
+import LiveChart from './components/LiveChart';
 
 const Widget = ({ title, children, className = '' }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -71,6 +72,12 @@ function Dashboard() {
           <p className="text-sm text-[#555] ml-5">전문가용 투자 분석 및 백테스트 대시보드</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            to="/chart"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-mono font-semibold text-emerald-400 bg-emerald-400/10 border border-emerald-400/30 hover:bg-emerald-400/20 hover:border-emerald-400/50 transition-all cursor-pointer"
+          >
+            <LineChart size={14} /> Live Chart
+          </Link>
           <Link
             to="/dividend"
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-mono font-semibold text-yellow-400 bg-yellow-400/10 border border-yellow-400/30 hover:bg-yellow-400/20 hover:border-yellow-400/50 transition-all cursor-pointer"
@@ -138,6 +145,7 @@ export default function App() {
       <Route path="/" element={<Dashboard />} />
       <Route path="/dividend" element={<DividendCalendar />} />
       <Route path="/economic" element={<EconomicCalendar />} />
+      <Route path="/chart" element={<LiveChart />} />
     </Routes>
   );
 }
