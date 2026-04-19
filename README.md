@@ -27,7 +27,9 @@ A Bloomberg terminal-inspired stock investment dashboard with real-time charts, 
 ### 🗂️ Dashboard
 - **CSS Grid Widget Dashboard** — A stable, hardware-accelerated dashboard layout displaying the Main Calculator, DRIP Simulator, Portfolio Builder, Sector Heatmap, and Future Forecast seamlessly on one screen.
 - **Interactive Widget Maximize Mode** — Full-screen pop-out capability for all dashboard widgets to allow detailed, focused data analysis.
-- **URL-Based Routing** — React Router integration with clean URLs (`/`, `/chart`, `/dividend`, `/economic`). Supports browser back/forward navigation and direct URL access.
+- **URL-Based Routing** — React Router integration with clean URLs (`/`, `/chart`, `/dividend`, `/economic`, `/guide`). Supports browser back/forward navigation and direct URL access.
+- **Global Multi-Language (i18n)** *(NEW)* — Switch the dashboard interface between **Korean (KR), English (EN), and Japanese (JP)** instantly via the top navigation bar header.
+- **Dedicated User Guide** *(NEW)* — Comprehensive, visually appealing instructions explaining how to use all dashboard features, fully synchronized with the global language selection.
 
 ### 📡 Live Data
 - **Live Market Ticker Tape** — Infinite-scrolling marquee displaying real-time prices for **22 assets**: BTC, ETH, SOL, XRP, DOGE (crypto), AAPL, MSFT, NVDA, GOOGL, AMZN, TSLA, META (stocks), S&P 500, DOW, NASDAQ, KOSPI, Nikkei, Hang Seng, FTSE, DAX (global indices), Gold, Crude Oil (commodities). Powered by Yahoo Finance — **no API key required**.
@@ -113,6 +115,7 @@ A Bloomberg terminal-inspired stock investment dashboard with real-time charts, 
 | `/chart` | Live Chart | Real-time TradingView charts for stocks, crypto & indices |
 | `/dividend` | Dividend Calendar | Track dividend schedules for stocks & ETFs |
 | `/economic` | Economic Calendar | Global economic events with country filters |
+| `/guide` | User Guide | Detailed instructions on how to use the dashboard |
 
 ## 🚀 Getting Started
 
@@ -220,9 +223,12 @@ stock-calculator/
     ├── main.jsx        # React entry point (BrowserRouter wrapper)
     ├── index.css       # Global styles, Tailwind config & ticker marquee CSS
     ├── App.jsx         # React Router routes & widget dashboard layout
+    ├── contexts/
+    │   └── LanguageContext.jsx # Global state for Multi-Language (i18n)
     ├── utils/
     │   ├── calculate.js    # Core financial calculations & Yahoo Finance API
     │   ├── format.js       # Number, date, currency formatting
+    │   ├── translations.js # Multi-Language dictionary (ko, en, ja)
     │   └── pdfExport.js    # PDF report generation
     └── components/
         ├── LiveTickerTape.jsx      # Infinite-scroll marquee (22 global assets)
@@ -231,6 +237,7 @@ stock-calculator/
         ├── LiveChart.jsx           # 📈 Live Chart (TradingView Advanced Chart)
         ├── DividendCalendar.jsx    # 💰 Dividend Calendar (Stocks & ETFs)
         ├── EconomicCalendar.jsx    # 🌍 Economic Calendar (TradingView)
+        ├── UserGuide.jsx           # 📖 Comprehensive multi-language User Guide
         ├── MainCalculator.jsx      # Main chart, inputs & event markers
         ├── BenchmarkChart.jsx      # Multi-benchmark comparison charts
         ├── ReturnsHeatmap.jsx      # Monthly returns heatmap matrix
